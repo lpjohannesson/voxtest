@@ -1,0 +1,43 @@
+[gd_scene load_steps=5 format=3 uid="uid://bshfq01fx3clb"]
+
+[ext_resource type="Script" uid="uid://cbl87gv2gvxks" path="res://player.gd" id="1_onrkg"]
+[ext_resource type="Script" uid="uid://b40noeuxi6u2u" path="res://player_camera.gd" id="2_i3pqv"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_jka67"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_i5arm"]
+radius = 0.4
+height = 1.8
+
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("player_camera", "jump_timer", "coyote_timer")]
+script = ExtResource("1_onrkg")
+player_camera = NodePath("PlayerCamera")
+jump_timer = NodePath("JumpTimer")
+coyote_timer = NodePath("CoyoteTimer")
+
+[node name="PlayerCamera" type="Node3D" parent="." node_paths=PackedStringArray("camera")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+script = ExtResource("2_i3pqv")
+camera = NodePath("Camera3D")
+
+[node name="Camera3D" type="Camera3D" parent="PlayerCamera"]
+current = true
+fov = 65.0
+
+[node name="VoxelViewer" type="VoxelViewer" parent="PlayerCamera/Camera3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_jka67")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_i5arm")
+
+[node name="CoyoteTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="JumpTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true

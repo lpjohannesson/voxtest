@@ -1,0 +1,58 @@
+[gd_scene load_steps=13 format=3 uid="uid://bjbexjy1hutbo"]
+
+[ext_resource type="Script" uid="uid://x2e5y6ygjqp6" path="res://game_scene.gd" id="1_mixcd"]
+[ext_resource type="PackedScene" uid="uid://bshfq01fx3clb" path="res://player.tscn" id="2_mj2jn"]
+[ext_resource type="Texture2D" uid="uid://c4f741yv5pr27" path="res://stone.png" id="3_kdryc"]
+[ext_resource type="Texture2D" uid="uid://dy0277x6weoex" path="res://stone_normal.png" id="4_6e45b"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_mixcd"]
+
+[sub_resource type="VoxelGeneratorNoise2D" id="VoxelGeneratorNoise2D_mj2jn"]
+channel = 0
+height_range = 20.0
+noise = SubResource("FastNoiseLite_mixcd")
+
+[sub_resource type="VoxelBlockyModelEmpty" id="VoxelBlockyModelEmpty_r3fl7"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a0tk4"]
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("3_kdryc")
+normal_scale = 0.7
+normal_texture = ExtResource("4_6e45b")
+
+[sub_resource type="VoxelBlockyModelCube" id="VoxelBlockyModelCube_i5arm"]
+material_override_0 = SubResource("StandardMaterial3D_a0tk4")
+atlas_size_in_tiles = Vector2i(1, 1)
+
+[sub_resource type="VoxelBlockyLibrary" id="VoxelBlockyLibrary_wc5p8"]
+models = Array[VoxelBlockyModel]([SubResource("VoxelBlockyModelEmpty_r3fl7"), SubResource("VoxelBlockyModelCube_i5arm")])
+
+[sub_resource type="VoxelMesherBlocky" id="VoxelMesherBlocky_e35lh"]
+library = SubResource("VoxelBlockyLibrary_wc5p8")
+
+[sub_resource type="Environment" id="Environment_r3fl7"]
+volumetric_fog_density = 0.0
+
+[node name="GameScene" type="Node3D" node_paths=PackedStringArray("terrain")]
+script = ExtResource("1_mixcd")
+terrain = NodePath("VoxelTerrain")
+
+[node name="Player" parent="." instance=ExtResource("2_mj2jn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 87, 0)
+
+[node name="VoxelTerrain" type="VoxelTerrain" parent="."]
+generator = SubResource("VoxelGeneratorNoise2D_mj2jn")
+mesher = SubResource("VoxelMesherBlocky_e35lh")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_r3fl7")
+
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="Node3D"]
+transform = Transform3D(0.906308, -0.346189, -0.242404, 0, -0.573577, 0.819152, -0.422618, -0.742404, -0.519837, 0, 0, 0)
+shadow_enabled = true
+
+[node name="DirectionalLight3D3" type="DirectionalLight3D" parent="Node3D"]
+transform = Transform3D(0.906308, 0.346189, 0.242404, 0, 0.573576, -0.819152, -0.422618, 0.742404, 0.519837, 0, 0, 0)
+light_energy = 0.2
