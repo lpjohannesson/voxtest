@@ -1,9 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://bjbexjy1hutbo"]
+[gd_scene load_steps=19 format=3 uid="uid://bjbexjy1hutbo"]
 
 [ext_resource type="Script" uid="uid://x2e5y6ygjqp6" path="res://game_scene.gd" id="1_mixcd"]
 [ext_resource type="PackedScene" uid="uid://bshfq01fx3clb" path="res://player.tscn" id="2_mj2jn"]
 [ext_resource type="Texture2D" uid="uid://c4f741yv5pr27" path="res://stone.png" id="3_kdryc"]
-[ext_resource type="Texture2D" uid="uid://dy0277x6weoex" path="res://stone_normal.png" id="4_6e45b"]
+[ext_resource type="Texture2D" uid="uid://bcfc6bceq63i" path="res://icon.svg" id="4_6e45b"]
+[ext_resource type="Texture2D" uid="uid://buv87jhpq3hqs" path="res://dirt.png" id="5_kdryc"]
+[ext_resource type="Texture2D" uid="uid://yatvetcv6at7" path="res://wood.png" id="5_mj2jn"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_mixcd"]
 
@@ -13,6 +15,13 @@ height_range = 20.0
 noise = SubResource("FastNoiseLite_mixcd")
 
 [sub_resource type="VoxelBlockyModelEmpty" id="VoxelBlockyModelEmpty_r3fl7"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6e45b"]
+albedo_texture = ExtResource("5_kdryc")
+
+[sub_resource type="VoxelBlockyModelCube" id="VoxelBlockyModelCube_6e45b"]
+material_override_0 = SubResource("StandardMaterial3D_6e45b")
+atlas_size_in_tiles = Vector2i(1, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a0tk4"]
 vertex_color_use_as_albedo = true
@@ -24,8 +33,15 @@ normal_texture = ExtResource("4_6e45b")
 material_override_0 = SubResource("StandardMaterial3D_a0tk4")
 atlas_size_in_tiles = Vector2i(1, 1)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kdryc"]
+albedo_texture = ExtResource("5_mj2jn")
+
+[sub_resource type="VoxelBlockyModelCube" id="VoxelBlockyModelCube_e35lh"]
+material_override_0 = SubResource("StandardMaterial3D_kdryc")
+atlas_size_in_tiles = Vector2i(1, 1)
+
 [sub_resource type="VoxelBlockyLibrary" id="VoxelBlockyLibrary_wc5p8"]
-models = Array[VoxelBlockyModel]([SubResource("VoxelBlockyModelEmpty_r3fl7"), SubResource("VoxelBlockyModelCube_i5arm")])
+models = Array[VoxelBlockyModel]([SubResource("VoxelBlockyModelEmpty_r3fl7"), SubResource("VoxelBlockyModelCube_6e45b"), SubResource("VoxelBlockyModelCube_i5arm"), SubResource("VoxelBlockyModelCube_e35lh")])
 
 [sub_resource type="VoxelMesherBlocky" id="VoxelMesherBlocky_e35lh"]
 library = SubResource("VoxelBlockyLibrary_wc5p8")
@@ -51,6 +67,7 @@ environment = SubResource("Environment_r3fl7")
 
 [node name="DirectionalLight3D2" type="DirectionalLight3D" parent="Node3D"]
 transform = Transform3D(0.906308, -0.346189, -0.242404, 0, -0.573577, 0.819152, -0.422618, -0.742404, -0.519837, 0, 0, 0)
+light_energy = 2.0
 shadow_enabled = true
 
 [node name="DirectionalLight3D3" type="DirectionalLight3D" parent="Node3D"]

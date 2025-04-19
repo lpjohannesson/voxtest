@@ -7,11 +7,13 @@ const DISTANCE_OFFSET := 1.0
 const MAX_VIEW_DISTANCE := 16.0
 
 @export var camera: Camera3D
+@export var player: Player
 
 var dragging := false
 var drag_distance := Vector2.ZERO
 var view_distance := MAX_VIEW_DISTANCE
 var drag_mouse_position := Vector2.ZERO
+var selected_block := 1
 
 func cast_block() -> VoxelRaycastResult:
 	var mouse_position := get_viewport().get_mouse_position()
@@ -37,7 +39,7 @@ func place_blocks() -> void:
 	if cast == null:
 		return
 	
-	GameScene.instance.voxel_tool.set_voxel(cast.previous_position, 1)
+	GameScene.instance.voxel_tool.set_voxel(cast.previous_position, selected_block)
 
 func cast_camera() -> void:
 	if view_distance == 0.0:
@@ -71,11 +73,9 @@ func _input(event: InputEvent) -> void:
 			
 			if drag_distance.length() >= MIN_DRAG_DISTANCE:
 				dragging = true
-				
-				drag_mouse_position = get_viewport().get_mouse_position()
 				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	cast_camera()
 	
 	if Input.is_action_just_pressed("zoom_in"):
@@ -87,6 +87,7 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("break"):
 		dragging = false
 		drag_distance = Vector2.ZERO
+		drag_mouse_position = get_viewport().get_mouse_position()
 	
 	if Input.is_action_just_released("break"):
 		if dragging:
@@ -97,3 +98,5 @@ func _process(_delta: float) -> void:
 	
 	if Input.is_action_just_pressed("place"):
 		place_blocks()
+	
+	rotation.y += Vector3.LEFT.rotated(Vector3.UP, rotation.y).dot(player.velocity) * 0.05 * delta
