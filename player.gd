@@ -66,7 +66,9 @@ func _physics_process(delta: float) -> void:
 		if input_dir == Vector2.ZERO:
 			if is_on_floor() and not last_on_floor:
 				animation_player.play("air_land")
-				animation_player.queue ("idle")
+			
+			if animation_player.current_animation != "air_land":
+				animation_player.play("idle")
 		else:
 			animation_player.play("run")
 	

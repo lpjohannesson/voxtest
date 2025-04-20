@@ -1,13 +1,14 @@
-[gd_scene load_steps=21 format=4 uid="uid://bshfq01fx3clb"]
+[gd_scene load_steps=22 format=4 uid="uid://bshfq01fx3clb"]
 
 [ext_resource type="Script" uid="uid://cbl87gv2gvxks" path="res://player.gd" id="1_onrkg"]
+[ext_resource type="Texture2D" uid="uid://byvrc1lcd5d0c" path="res://shadow.png" id="3_hqtel"]
 [ext_resource type="Script" uid="uid://ban4ccdet28jt" path="res://player_ui.gd" id="3_i3pqv"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rciol"]
 resource_name = "Azul"
 cull_mode = 2
 vertex_color_use_as_albedo = true
-albedo_color = Color(0.205523, 0.522377, 0.745313, 1)
+albedo_color = Color(0.764385, 0, 0.107552, 1)
 metallic = 0.109934
 roughness = 0.404527
 
@@ -7147,6 +7148,7 @@ mesh = NodePath("mannequiny-0_3_0")
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, -0.9, 0)
 
 [node name="root" type="Node3D" parent="mannequiny-0_3_0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.206395)
 
 [node name="Skeleton3D" type="Skeleton3D" parent="mannequiny-0_3_0/root"]
 bones/0/name = "pelvis"
@@ -7508,6 +7510,14 @@ text = "Stone"
 [node name="Button3" type="Button" parent="PlayerUI/VBoxContainer"]
 layout_mode = 2
 text = "Wood"
+
+[node name="Decal" type="Decal" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.4, 0)
+size = Vector3(1, 5, 1)
+texture_albedo = ExtResource("3_hqtel")
+modulate = Color(1, 1, 1, 0.835294)
+upper_fade = 1.12715e-05
+lower_fade = 1.0
 
 [connection signal="pressed" from="PlayerUI/VBoxContainer/Button" to="PlayerUI" method="_on_button_pressed"]
 [connection signal="pressed" from="PlayerUI/VBoxContainer/Button2" to="PlayerUI" method="_on_button_2_pressed"]

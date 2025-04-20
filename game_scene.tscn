@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cc1p5ky35e8y8" path="res://player_camera.tscn" id="3_6e45b"]
 [ext_resource type="Texture2D" uid="uid://c4f741yv5pr27" path="res://stone.png" id="3_kdryc"]
 [ext_resource type="Texture2D" uid="uid://bcfc6bceq63i" path="res://icon.svg" id="4_6e45b"]
-[ext_resource type="Texture2D" uid="uid://buv87jhpq3hqs" path="res://dirt.png" id="5_kdryc"]
+[ext_resource type="Texture2D" uid="uid://d4l6g16uoe3k4" path="res://grass.png" id="4_e35lh"]
 [ext_resource type="Texture2D" uid="uid://yatvetcv6at7" path="res://wood.png" id="5_mj2jn"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_mixcd"]
@@ -18,17 +18,25 @@ noise = SubResource("FastNoiseLite_mixcd")
 [sub_resource type="VoxelBlockyModelEmpty" id="VoxelBlockyModelEmpty_r3fl7"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6e45b"]
-albedo_texture = ExtResource("5_kdryc")
+albedo_texture = ExtResource("4_e35lh")
+texture_filter = 0
 
 [sub_resource type="VoxelBlockyModelCube" id="VoxelBlockyModelCube_6e45b"]
 material_override_0 = SubResource("StandardMaterial3D_6e45b")
-atlas_size_in_tiles = Vector2i(1, 1)
+atlas_size_in_tiles = Vector2i(3, 1)
+mesh_ortho_rotation_index = 16
+tile_left = Vector2i(1, 0)
+tile_right = Vector2i(1, 0)
+tile_bottom = Vector2i(2, 0)
+tile_back = Vector2i(1, 0)
+tile_front = Vector2i(1, 0)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a0tk4"]
 vertex_color_use_as_albedo = true
 albedo_texture = ExtResource("3_kdryc")
 normal_scale = 0.7
 normal_texture = ExtResource("4_6e45b")
+texture_filter = 0
 
 [sub_resource type="VoxelBlockyModelCube" id="VoxelBlockyModelCube_i5arm"]
 material_override_0 = SubResource("StandardMaterial3D_a0tk4")
@@ -36,6 +44,7 @@ atlas_size_in_tiles = Vector2i(1, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kdryc"]
 albedo_texture = ExtResource("5_mj2jn")
+texture_filter = 0
 
 [sub_resource type="VoxelBlockyModelCube" id="VoxelBlockyModelCube_e35lh"]
 material_override_0 = SubResource("StandardMaterial3D_kdryc")
@@ -48,6 +57,8 @@ models = Array[VoxelBlockyModel]([SubResource("VoxelBlockyModelEmpty_r3fl7"), Su
 library = SubResource("VoxelBlockyLibrary_wc5p8")
 
 [sub_resource type="Environment" id="Environment_r3fl7"]
+ambient_light_source = 2
+ambient_light_color = Color(0.419813, 0.419813, 0.419813, 1)
 volumetric_fog_density = 0.0
 
 [node name="GameScene" type="Node3D" node_paths=PackedStringArray("terrain")]
@@ -71,10 +82,5 @@ environment = SubResource("Environment_r3fl7")
 [node name="Node3D" type="Node3D" parent="."]
 
 [node name="DirectionalLight3D2" type="DirectionalLight3D" parent="Node3D"]
-transform = Transform3D(0.906308, -0.346189, -0.242404, 0, -0.573577, 0.819152, -0.422618, -0.742404, -0.519837, 0, 0, 0)
-light_energy = 2.0
+transform = Transform3D(0.642788, 0.663414, -0.383022, 0, 0.5, 0.866026, 0.766045, -0.556671, 0.321394, 0, 0, 0)
 shadow_enabled = true
-
-[node name="DirectionalLight3D3" type="DirectionalLight3D" parent="Node3D"]
-transform = Transform3D(0.906308, 0.346189, 0.242404, 0, 0.573576, -0.819152, -0.422618, 0.742404, 0.519837, 0, 0, 0)
-light_energy = 0.2
