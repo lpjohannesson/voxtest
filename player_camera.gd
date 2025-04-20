@@ -4,16 +4,20 @@ class_name PlayerCamera
 const DRAG_SPEED := 0.005
 const MIN_DRAG_DISTANCE := 8.0
 const DISTANCE_OFFSET := 1.0
-const MAX_VIEW_DISTANCE := 16.0
+const MAX_ZOOM := 16.0
+const FOLLOW_DISTANCE := 1.5
 
 @export var camera: Camera3D
 @export var player: Player
 
+var holding_break := false
 var dragging := false
 var drag_distance := Vector2.ZERO
-var view_distance := MAX_VIEW_DISTANCE
+var zoom := MAX_ZOOM
 var drag_mouse_position := Vector2.ZERO
 var selected_block := 1
+
+@onready var target_position := player.global_position
 
 func cast_block() -> VoxelRaycastResult:
 	var mouse_position := get_viewport().get_mouse_position()
@@ -34,6 +38,9 @@ func break_blocks() -> void:
 	GameScene.instance.voxel_tool.set_voxel(cast.position, 0)
 
 func place_blocks() -> void:
+	if dragging:
+		return
+	
 	var cast := cast_block()
 	
 	if cast == null:
@@ -42,32 +49,36 @@ func place_blocks() -> void:
 	GameScene.instance.voxel_tool.set_voxel(cast.previous_position, selected_block)
 
 func cast_camera() -> void:
-	if view_distance == 0.0:
-		camera.position.z =  0.0
+	if zoom == 0.0:
+		camera.global_position = player.global_position
 		return
 	
 	var ray_direction := quaternion * Vector3.BACK
-	var ray_from := global_position
-	var ray_to := ray_from + ray_direction * view_distance
+	var ray_from := player.global_position
+	var ray_to := global_position + ray_direction * zoom
 	
 	var space_state := get_world_3d().direct_space_state
 	var query := PhysicsRayQueryParameters3D.create(ray_from, ray_to)
+	
+	query.exclude = [player]
+	
 	var result := space_state.intersect_ray(query)
 	
 	if result.is_empty():
-		camera.position.z = view_distance - DISTANCE_OFFSET
+		camera.global_position = ray_to
 	else:
-		camera.global_position = result.position - quaternion * Vector3.BACK * DISTANCE_OFFSET
+		camera.global_position = result.position
+	
+	camera.global_position -= ray_direction * DISTANCE_OFFSET
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		if not Input.is_action_pressed("break"):
+		if not holding_break:
 			return
 		
 		if dragging:
 			rotation.x = clamp(rotation.x - event.relative.y * DRAG_SPEED, -PI * 0.5, PI * 0.5)
 			rotation.y -= event.relative.x * DRAG_SPEED
-			
 		else:
 			drag_distance += event.relative
 			
@@ -75,17 +86,31 @@ func _input(event: InputEvent) -> void:
 				dragging = true
 				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	target_position.x = player.global_position.x
+	target_position.z = player.global_position.z
+	
+	if target_position.y > player.global_position.y or player.is_on_floor():
+		target_position.y = player.global_position.y
+	
+	var last_position_2d := Vector2(global_position.x, global_position.z)
+	global_position = global_position.lerp(target_position, 1.0 - pow(0.01, delta))
+	var position_2d := Vector2(global_position.x, global_position.z)
+	
+	var camera_movement := (position_2d - last_position_2d).length()
+	rotation.y += Vector3.LEFT.rotated(Vector3.UP, rotation.y).dot(player.velocity) * camera_movement * 0.01
+	
 	cast_camera()
 	
 	if Input.is_action_just_pressed("zoom_in"):
-		view_distance = max(view_distance - 1.0, 0.0)
+		zoom = max(zoom - 1.0, 0.0)
 	
 	if Input.is_action_just_pressed("zoom_out"):
-		view_distance = min(view_distance + 1.0, MAX_VIEW_DISTANCE)
+		zoom = min(zoom + 1.0, MAX_ZOOM)
 	
 	if Input.is_action_just_pressed("break"):
-		dragging = false
+		holding_break = true
+		
 		drag_distance = Vector2.ZERO
 		drag_mouse_position = get_viewport().get_mouse_position()
 	
@@ -95,8 +120,9 @@ func _process(delta: float) -> void:
 			Input.warp_mouse(drag_mouse_position)
 		
 		break_blocks()
+		
+		holding_break = false
+		dragging = false
 	
 	if Input.is_action_just_pressed("place"):
 		place_blocks()
-	
-	rotation.y += Vector3.LEFT.rotated(Vector3.UP, rotation.y).dot(player.velocity) * 0.05 * delta
