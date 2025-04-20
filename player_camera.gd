@@ -5,8 +5,8 @@ const DRAG_SPEED := 0.005
 const MIN_DRAG_DISTANCE := 8.0
 const DISTANCE_OFFSET := 1.0
 const MAX_ZOOM := 16.0
-const FOLLOW_DISTANCE := 1.0
 const ABOVE_OFFSET := 2.0
+const BACK_OFFSET := 1.0
 const CAMERA_SMOOTH := 0.002
 
 @export var camera: Camera3D
@@ -58,7 +58,7 @@ func cast_camera() -> void:
 	
 	var ray_direction := quaternion * Vector3.BACK
 	var ray_from := player.global_position
-	var ray_to := global_position + ray_direction * zoom + Vector3.UP * ABOVE_OFFSET
+	var ray_to := global_position + ray_direction * zoom + Vector3.UP * ABOVE_OFFSET + Vector3.BACK.rotated(Vector3.UP, rotation.y) * BACK_OFFSET
 	
 	var space_state := get_world_3d().direct_space_state
 	var query := PhysicsRayQueryParameters3D.create(ray_from, ray_to)
@@ -89,20 +89,9 @@ func _input(event: InputEvent) -> void:
 				dragging = true
 				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-func follow_camera() -> void:
-	var position_2d := Vector2(target_position.x, target_position.z)
-	var target_2d := Vector2(player.global_position.x, player.global_position.z)
-	
-	var to_target := position_2d - target_2d
-	var to_target_limited := to_target.limit_length(FOLLOW_DISTANCE)
-	
-	position_2d = target_2d + to_target_limited
-	
-	target_position.x = position_2d.x
-	target_position.z = position_2d.y
-
 func _physics_process(delta: float) -> void:
-	follow_camera()
+	target_position.x = player.global_position.x
+	target_position.z = player.global_position.z
 	
 	if target_position.y > player.global_position.y or player.is_on_floor():
 		target_position.y = player.global_position.y
