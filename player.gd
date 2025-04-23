@@ -6,13 +6,13 @@ const GROUND_ACCEL := 100.0
 const AIR_ACCEL := 20.0
 const FRICTION := 0.00005
 const GRAVITY := 25.0
-const JUMP_VELOCITY :=  12.0
-const JUMP_STOP := 0.6
+const JUMP_VELOCITY := 12.0
+const JUMP_STOP := 0.5
 
 @export var player_camera: PlayerCamera
 @export var jump_timer: Timer
 @export var coyote_timer: Timer
-@export var animation_player: AnimationPlayer
+@onready var animation_player: AnimationPlayer = mesh.get_node("AnimationPlayer")
 @export var mesh: Node3D
 @export var camera_origin: Node3D
 
@@ -42,7 +42,7 @@ func _physics_process(delta: float) -> void:
 			velocity.y = JUMP_VELOCITY
 			midstopped = false
 			
-			animation_player.play("air_jump") 
+			animation_player.play("Jump") 
 	
 	var input_dir := Input.get_vector("move_left", "move_right", "move_up", "move_down").rotated(-player_camera.rotation.y)
 	var velocity_2d := Vector2(velocity.x, velocity.z)
@@ -60,17 +60,17 @@ func _physics_process(delta: float) -> void:
 	
 	move_and_slide() 
 	
-	if velocity_2d != Vector2.ZERO:
+	if velocity_2d != Vector2.ZERO and not is_on_wall():
 		mesh.rotation.y = -velocity_2d.angle() + PI * 0.5
 	
 	if is_on_floor():
 		if input_dir == Vector2.ZERO:
 			if is_on_floor() and not last_on_floor:
-				animation_player.play("air_land")
+				animation_player.play("Skid")
 			
-			if animation_player.current_animation != "air_land":
-				animation_player.play("idle")
+			if animation_player.current_animation != "Skid":
+				animation_player.play("Idle")
 		else:
-			animation_player.play("run")
+			animation_player.play("Run")
 	
 	last_on_floor = is_on_floor()
