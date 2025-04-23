@@ -14,6 +14,7 @@ const JUMP_STOP := 0.6
 @export var coyote_timer: Timer
 @export var animation_player: AnimationPlayer
 @export var mesh: Node3D
+@export var camera_origin: Node3D
 
 var midstopped := true
 var last_on_floor := true

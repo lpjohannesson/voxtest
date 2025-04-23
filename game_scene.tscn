@@ -1,8 +1,9 @@
-[gd_scene load_steps=20 format=3 uid="uid://bjbexjy1hutbo"]
+[gd_scene load_steps=21 format=3 uid="uid://bjbexjy1hutbo"]
 
 [ext_resource type="Script" uid="uid://x2e5y6ygjqp6" path="res://game_scene.gd" id="1_mixcd"]
 [ext_resource type="PackedScene" uid="uid://bshfq01fx3clb" path="res://player.tscn" id="2_mj2jn"]
 [ext_resource type="PackedScene" uid="uid://cc1p5ky35e8y8" path="res://player_camera.tscn" id="3_6e45b"]
+[ext_resource type="PackedScene" uid="uid://b3shtqyo1dky1" path="res://ui_layer.tscn" id="3_e35lh"]
 [ext_resource type="Texture2D" uid="uid://c4f741yv5pr27" path="res://stone.png" id="3_kdryc"]
 [ext_resource type="Texture2D" uid="uid://bcfc6bceq63i" path="res://icon.svg" id="4_6e45b"]
 [ext_resource type="Texture2D" uid="uid://d4l6g16uoe3k4" path="res://grass.png" id="4_e35lh"]
@@ -61,13 +62,17 @@ ambient_light_source = 2
 ambient_light_color = Color(0.419813, 0.419813, 0.419813, 1)
 volumetric_fog_density = 0.0
 
-[node name="GameScene" type="Node3D" node_paths=PackedStringArray("terrain")]
+[node name="GameScene" type="Node3D" node_paths=PackedStringArray("player", "player_camera", "terrain")]
 script = ExtResource("1_mixcd")
+player = NodePath("Player")
+player_camera = NodePath("PlayerCamera")
 terrain = NodePath("VoxelTerrain")
 
 [node name="Player" parent="." node_paths=PackedStringArray("player_camera") instance=ExtResource("2_mj2jn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 87, 0)
 player_camera = NodePath("../PlayerCamera")
+
+[node name="UILayer" parent="." instance=ExtResource("3_e35lh")]
 
 [node name="PlayerCamera" parent="." node_paths=PackedStringArray("player") instance=ExtResource("3_6e45b")]
 player = NodePath("../Player")
